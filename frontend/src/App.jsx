@@ -7,6 +7,7 @@ import api from './api';
 import Kanban from './components/Kanban';
 import CalendarView from './components/CalendarView';
 import Profile from './components/Profile';
+import Admin from './components/Admin';
 
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -40,9 +41,10 @@ export default function App() {
     localStorage.setItem('user', JSON.stringify(data.user));
     setUser(data.user);
   };
-  const handleUserUpdate = (updated) => {
-    localStorage.setItem('user', JSON.stringify(updated));
-    setUser(updated);
+    const handleUserUpdate = (updated) => {
+    const merged = { ...user, ...updated };
+    localStorage.setItem('user', JSON.stringify(merged));
+    setUser(merged);
   };
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -72,6 +74,7 @@ export default function App() {
                   {page === 'profile' && (
         <Profile user={user} tasks={tasks} onUserUpdate={handleUserUpdate} />
       )}
+            {page === 'admin' && user.role === 'admin' && <Admin currentUser={user} />}
     </Layout>
   );
 }
