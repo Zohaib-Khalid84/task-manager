@@ -1,10 +1,11 @@
-import { LayoutDashboard, ListChecks, Kanban as KanbanIcon, Sun, Moon, LogOut } from 'lucide-react';
+import { LayoutDashboard, ListChecks, Kanban as KanbanIcon, CalendarDays, Sun, Moon, LogOut } from 'lucide-react';
 
 export default function Layout({ user, page, setPage, theme, toggleTheme, onLogout, children }) {
   const items = [
     { id: 'overview', label: 'Overview', icon: <LayoutDashboard size={18} /> },
     { id: 'tasks', label: 'My Tasks', icon: <ListChecks size={18} /> },
         { id: 'kanban', label: 'Board', icon: <KanbanIcon size={18} /> },
+            { id: 'calendar', label: 'Calendar', icon: <CalendarDays size={18} /> },
   ];
 
   return (
@@ -34,7 +35,7 @@ export default function Layout({ user, page, setPage, theme, toggleTheme, onLogo
 
       <div className="main">
         <header className="topbar">
-          <h1>{{ overview: 'Overview', tasks: 'My Tasks', kanban: 'Task Board' }[page]}</h1>
+         <h1>{{ overview: 'Overview', tasks: 'My Tasks', kanban: 'Task Board', calendar: 'Calendar' }[page]}</h1>
           <div className="topbar-right">
             <button className="icon-btn" onClick={toggleTheme} title="Toggle theme">
               {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}

@@ -5,6 +5,7 @@ import Overview from './components/Overview';
 import Tasks from './components/Tasks';
 import api from './api';
 import Kanban from './components/Kanban';
+import CalendarView from './components/CalendarView';
 
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -63,6 +64,7 @@ export default function App() {
       )}
       {page === 'tasks' && <Tasks tasks={tasks} reload={loadTasks} />}
       {page === 'kanban' && <Kanban tasks={tasks} reload={loadTasks} />}
+            {page === 'calendar' && <CalendarView tasks={tasks} />}
     </Layout>
   );
 }
