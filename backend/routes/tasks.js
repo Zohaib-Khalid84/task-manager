@@ -13,8 +13,14 @@ router.get('/', async (req, res) => {
 
 // Add task
 router.post('/', async (req, res) => {
-  if (!req.body.title) return res.status(400).json({ message: 'Title is required' });
-  const task = await Task.create({ user: req.userId, title: req.body.title });
+  const { title, priority, dueDate } = req.body;
+  if (!title) return res.status(400).json({ message: 'Title is required' });
+  const task = await Task.create({
+    user: req.userId,
+    title,
+    priority: priority || 'Medium',
+    dueDate: dueDate || null,
+  });
   res.status(201).json(task);
 });
 
