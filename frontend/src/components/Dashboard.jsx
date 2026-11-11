@@ -8,6 +8,8 @@ export default function Dashboard({ user, onLogout }) {
   const [dueDate, setDueDate] = useState('');
   const [editId, setEditId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('All');
 
   const loadTasks = async () => {
     const { data } = await api.get('/tasks');
@@ -54,11 +56,32 @@ export default function Dashboard({ user, onLogout }) {
   const isOverdue = (task) =>
     task.dueDate && !task.completed && new Date(task.dueDate) < new Date(new Date().toDateString());
 
+  // Statistics
+  const total = tasks.length;
+  const completedCount = tasks.filter((t) => t.completed).length;
+  const pendingCount = total - completedCount;
+
+  // Search + filter
+  const visibleTasks = tasks.filter((t) => {
+    const matchSearch = t.title.toLowerCase().includes(search.toLowerCase());
+    const matchFilter =
+      filter === 'All' ||
+      (filter === 'Completed' && t.completed) ||
+      (filter === 'Pending' && !t.completed);
+    return matchSearch && matchFilter;
+  });
+
   return (
     <div className="card">
       <div className="header">
         <h2>Welcome, {user.name}</h2>
         <button className="logout" onClick={onLogout}>Logout</button>
+      </div>
+
+      <div className="stats">
+        <div className="stat"><strong>{total}</strong><span>Total</span></div>
+        <div className="stat"><strong>{completedCount}</strong><span>Completed</span></div>
+        <div className="stat"><strong>{pendingCount}</strong><span>Pending</span></div>
       </div>
 
       <form onSubmit={addTask} className="task-form">
@@ -78,9 +101,28 @@ export default function Dashboard({ user, onLogout }) {
         <button type="submit">Add Task</button>
       </form>
 
+      <input
+        className="search"
+        placeholder="Search tasks..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <div className="filters">
+        {['All', 'Pending', 'Completed'].map((f) => (
+          <button
+            key={f}
+            className={filter === f ? 'filter active' : 'filter'}
+            onClick={() => setFilter(f)}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
       <ul>
-        {tasks.length === 0 && <p className="empty">No tasks yet.</p>}
-        {tasks.map((task) => (
+        {visibleTasks.length === 0 && <p className="empty">No tasks found.</p>}
+        {visibleTasks.map((task) => (
           <li key={task._id}>
             <div className="task-main">
               {editId === task._id ? (
