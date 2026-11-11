@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Overview from './components/Overview';
 import Tasks from './components/Tasks';
 import api from './api';
+import Kanban from './components/Kanban';
 
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -57,11 +58,11 @@ export default function App() {
       toggleTheme={() => setTheme(theme === 'light' ? 'dark' : 'light')}
       onLogout={handleLogout}
     >
-      {page === 'overview' ? (
+            {page === 'overview' && (
         <Overview user={user} tasks={tasks} goToTasks={() => setPage('tasks')} />
-      ) : (
-        <Tasks tasks={tasks} reload={loadTasks} />
       )}
+      {page === 'tasks' && <Tasks tasks={tasks} reload={loadTasks} />}
+      {page === 'kanban' && <Kanban tasks={tasks} reload={loadTasks} />}
     </Layout>
   );
 }

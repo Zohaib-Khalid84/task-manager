@@ -25,11 +25,17 @@ router.post('/', async (req, res) => {
   });
   res.status(201).json(task);
 });
-// Update task (mark done / edit title)
+// Update task
 router.put('/:id', async (req, res) => {
+  const update = { ...req.body };
+  if (update.status) {
+    update.completed = update.status === 'done';
+  } else if (typeof update.completed === 'boolean') {
+    update.status = update.completed ? 'done' : 'todo';
+  }
   const task = await Task.findOneAndUpdate(
     { _id: req.params.id, user: req.userId },
-    req.body,
+    update,
     { new: true }
   );
   if (!task) return res.status(404).json({ message: 'Task not found' });
