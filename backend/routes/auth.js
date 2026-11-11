@@ -8,6 +8,8 @@ const router = express.Router();
 const makeToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 // Register
 router.post('/register', async (req, res) => {
   try {
@@ -15,11 +17,22 @@ router.post('/register', async (req, res) => {
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'All fields are required' });
     }
-    const exists = await User.findOne({ email });
+    if (name.trim().length < 2) {
+      return res.status(400).json({ message: 'Name must be at least 2 characters' });
+    }
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Please enter a valid email' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const exists = await User.findOne({ email: cleanEmail });
     if (exists) return res.status(400).json({ message: 'Email already registered' });
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, password: hashed });
+    const user = await User.create({ name: name.trim(), email: cleanEmail, password: hashed });
     res.status(201).json({
       token: makeToken(user._id),
       user: { id: user._id, name: user.name, email: user.email },
@@ -33,7 +46,10 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+    const user = await User.findOne({ email: email.trim().toLowerCase() });
     if (!user) return res.status(400).json({ message: 'Invalid email or password' });
 
     const match = await bcrypt.compare(password, user.password);
