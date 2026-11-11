@@ -236,3 +236,13 @@ label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 6px; }
   .cal-cell { min-height: 60px; }
   .cal-pill { display: none; }
 }
+/* Profile */
+.profile-head { display: flex; align-items: center; gap: 20px; margin-bottom: 16px; flex-wrap: wrap; }
+.avatar.big { width: 72px; height: 72px; font-size: 30px; }
+.profile-head h2 { font-size: 22px; }
+.profile-stats { display: flex; gap: 24px; margin-left: auto; }
+.profile-stats div { display: flex; flex-direction: column; align-items: center; }
+.profile-stats strong { font-size: 22px; color: var(--primary); }
+.profile-stats span { font-size: 12px; color: var(--muted); }
+.success { color: var(--green); font-size: 13px; margin: 10px 0 0; }
+input:disabled { opacity: 0.6; cursor: not-allowed; }
