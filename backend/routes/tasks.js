@@ -13,17 +13,18 @@ router.get('/', async (req, res) => {
 
 // Add task
 router.post('/', async (req, res) => {
-  const { title, priority, dueDate } = req.body;
-if (!title || !title.trim()) return res.status(400).json({ message: 'Title is required' });
-   const task = await Task.create({
+  const { title, description, category, priority, dueDate } = req.body;
+  if (!title || !title.trim()) return res.status(400).json({ message: 'Title is required' });
+  const task = await Task.create({
     user: req.userId,
     title: title.trim(),
+    description: description || '',
+    category: category || 'Personal',
     priority: priority || 'Medium',
     dueDate: dueDate || null,
   });
   res.status(201).json(task);
 });
-
 // Update task (mark done / edit title)
 router.put('/:id', async (req, res) => {
   const task = await Task.findOneAndUpdate(

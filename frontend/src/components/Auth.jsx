@@ -20,12 +20,10 @@ export default function Auth({ onLogin }) {
     e.preventDefault();
     const problem = validate();
     if (problem) return setError(problem);
-
     setError('');
     setLoading(true);
     try {
-      const url = isLogin ? '/auth/login' : '/auth/register';
-      const { data } = await api.post(url, form);
+      const { data } = await api.post(isLogin ? '/auth/login' : '/auth/register', form);
       onLogin(data);
     } catch (err) {
       setError(err.response?.data?.message || 'Cannot connect to server');
@@ -34,28 +32,44 @@ export default function Auth({ onLogin }) {
     }
   };
 
-  const switchMode = () => {
-    setIsLogin(!isLogin);
-    setError('');
-  };
-
   return (
-    <div className="card">
-      <h2>{isLogin ? 'Login' : 'Create Account'}</h2>
-      <form onSubmit={handleSubmit} noValidate>
-        {!isLogin && (
-          <input name="name" placeholder="Full name" value={form.name} onChange={handleChange} />
-        )}
-        <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} />
-        <input name="password" type="password" placeholder="Password (min 6 characters)" value={form.password} onChange={handleChange} />
-        {error && <p className="error">{error}</p>}
-        <button type="submit" disabled={loading}>
-          {loading ? 'Please wait...' : isLogin ? 'Login' : 'Register'}
-        </button>
-      </form>
-      <p className="switch" onClick={switchMode}>
-        {isLogin ? "Don't have an account? Register" : 'Already have an account? Login'}
-      </p>
+    <div className="auth-page">
+      <div className="auth-side">
+        <div className="brand light">
+          <span className="logo">✓</span>
+          <span className="brand-text">TaskFlow</span>
+        </div>
+        <h1>Organize your work.<br />Achieve more.</h1>
+        <ul>
+          <li>✔ Track tasks with priorities and deadlines</li>
+          <li>✔ Visual dashboard with progress charts</li>
+          <li>✔ Secure personal account</li>
+        </ul>
+      </div>
+
+      <div className="auth-form-wrap">
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          <h2>{isLogin ? 'Welcome back' : 'Create your account'}</h2>
+          <p className="muted">{isLogin ? 'Login to continue' : 'Start managing your tasks today'}</p>
+          {!isLogin && (
+            <>
+              <label>Full name</label>
+              <input name="name" value={form.name} onChange={handleChange} />
+            </>
+          )}
+          <label>Email</label>
+          <input name="email" type="email" value={form.email} onChange={handleChange} />
+          <label>Password</label>
+          <input name="password" type="password" value={form.password} onChange={handleChange} />
+          {error && <p className="error">{error}</p>}
+          <button type="submit" className="btn-primary full" disabled={loading}>
+            {loading ? 'Please wait...' : isLogin ? 'Login' : 'Register'}
+          </button>
+          <p className="switch" onClick={() => { setIsLogin(!isLogin); setError(''); }}>
+            {isLogin ? "Don't have an account? Register" : 'Already have an account? Login'}
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
