@@ -1,7 +1,7 @@
 import { CheckCircle2, Clock, ListTodo, AlertTriangle } from 'lucide-react';
 import { formatDate, isOverdue } from '../utils';
 import WeeklyChart from './WeeklyChart';
-
+import CountUp from './CountUp';
 export default function Overview({ user, tasks, goToTasks }) {
   const total = tasks.length;
   const done = tasks.filter((t) => t.completed).length;
@@ -54,7 +54,7 @@ export default function Overview({ user, tasks, goToTasks }) {
           <div className="stat-card" key={c.label}>
             <div className={`stat-icon ${c.color}`}>{c.icon}</div>
             <div>
-              <div className="stat-value">{c.value}</div>
+              <div className="stat-value"><CountUp value={c.value} /></div>
               <div className="stat-label">{c.label}</div>
             </div>
           </div>
