@@ -8,6 +8,7 @@ import Kanban from './components/Kanban';
 import CalendarView from './components/CalendarView';
 import Profile from './components/Profile';
 import Admin from './components/Admin';
+import Toast from './components/Toast';
 
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -54,17 +55,18 @@ export default function App() {
     setPage('overview');
   };
 
-  if (!user) return <Auth onLogin={handleLogin} />;
+  if (!user) return (<><Auth onLogin={handleLogin} /><Toast /></>);
 
   return (
-    <Layout
-      user={user}
-      page={page}
-      setPage={setPage}
-      theme={theme}
-      toggleTheme={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-      onLogout={handleLogout}
-    >
+    <>
+      <Layout
+        user={user}
+        page={page}
+        setPage={setPage}
+        theme={theme}
+        toggleTheme={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+        onLogout={handleLogout}
+      >
             {page === 'overview' && (
         <Overview user={user} tasks={tasks} goToTasks={() => setPage('tasks')} />
       )}
@@ -76,5 +78,7 @@ export default function App() {
       )}
             {page === 'admin' && user.role === 'admin' && <Admin currentUser={user} />}
     </Layout>
+    <Toast />
+     </>
   );
 }

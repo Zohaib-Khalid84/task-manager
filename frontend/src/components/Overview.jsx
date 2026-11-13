@@ -1,5 +1,6 @@
 import { CheckCircle2, Clock, ListTodo, AlertTriangle } from 'lucide-react';
 import { formatDate, isOverdue } from '../utils';
+import WeeklyChart from './WeeklyChart';
 
 export default function Overview({ user, tasks, goToTasks }) {
   const total = tasks.length;
@@ -58,6 +59,10 @@ export default function Overview({ user, tasks, goToTasks }) {
             </div>
           </div>
         ))}
+      </div>
+            <div className="panel" style={{ marginBottom: 18 }}>
+        <h3>Weekly Activity</h3>
+        <WeeklyChart tasks={tasks} />
       </div>
 
       <div className="grid-2">

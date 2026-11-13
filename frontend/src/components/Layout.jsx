@@ -1,22 +1,35 @@
-import { LayoutDashboard, ListChecks, Kanban as KanbanIcon, CalendarDays, UserCircle, ShieldCheck, Sun, Moon, LogOut } from 'lucide-react';
+import { useState } from 'react';
+import {
+  LayoutDashboard, ListChecks, Kanban as KanbanIcon, CalendarDays, UserCircle,
+  ShieldCheck, Sun, Moon, LogOut, PanelLeft,
+} from 'lucide-react';
+
+const TITLES = {
+  overview: 'Overview', tasks: 'My Tasks', kanban: 'Task Board',
+  calendar: 'Calendar', profile: 'Profile', admin: 'Admin Panel',
+};
 
 export default function Layout({ user, page, setPage, theme, toggleTheme, onLogout, children }) {
+  const [collapsed, setCollapsed] = useState(false);
+
   const items = [
     { id: 'overview', label: 'Overview', icon: <LayoutDashboard size={18} /> },
     { id: 'tasks', label: 'My Tasks', icon: <ListChecks size={18} /> },
-        { id: 'kanban', label: 'Board', icon: <KanbanIcon size={18} /> },
-            { id: 'calendar', label: 'Calendar', icon: <CalendarDays size={18} /> },
-                { id: 'profile', label: 'Profile', icon: <UserCircle size={18} /> },
-                  
-  
+    { id: 'kanban', label: 'Board', icon: <KanbanIcon size={18} /> },
+    { id: 'calendar', label: 'Calendar', icon: <CalendarDays size={18} /> },
+    { id: 'profile', label: 'Profile', icon: <UserCircle size={18} /> },
   ];
-    if (user.role === 'admin') {
+  if (user.role === 'admin') {
     items.push({ id: 'admin', label: 'Admin', icon: <ShieldCheck size={18} /> });
   }
 
+  const today = new Date().toLocaleDateString(undefined, {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+  });
+
   return (
     <div className="app">
-      <aside className="sidebar">
+      <aside className={collapsed ? 'sidebar collapsed' : 'sidebar'}>
         <div className="brand">
           <span className="logo">✓</span>
           <span className="brand-text">TaskFlow</span>
@@ -27,13 +40,14 @@ export default function Layout({ user, page, setPage, theme, toggleTheme, onLogo
               key={it.id}
               className={page === it.id ? 'nav-item active' : 'nav-item'}
               onClick={() => setPage(it.id)}
+              title={it.label}
             >
               {it.icon}
               <span>{it.label}</span>
             </button>
           ))}
         </nav>
-        <button className="nav-item logout-btn" onClick={onLogout}>
+        <button className="nav-item logout-btn" onClick={onLogout} title="Logout">
           <LogOut size={18} />
           <span>Logout</span>
         </button>
@@ -41,7 +55,15 @@ export default function Layout({ user, page, setPage, theme, toggleTheme, onLogo
 
       <div className="main">
         <header className="topbar">
-         <h1>{{ overview: 'Overview', tasks: 'My Tasks', kanban: 'Task Board', calendar: 'Calendar', profile: 'Profile', admin: 'Admin Panel' }[page]}</h1>
+          <div className="topbar-left">
+            <button className="icon-btn" onClick={() => setCollapsed(!collapsed)} title="Toggle sidebar">
+              <PanelLeft size={18} />
+            </button>
+            <div>
+              <h1>{TITLES[page]}</h1>
+              <span className="date-text">{today}</span>
+            </div>
+          </div>
           <div className="topbar-right">
             <button className="icon-btn" onClick={toggleTheme} title="Toggle theme">
               {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
@@ -52,7 +74,7 @@ export default function Layout({ user, page, setPage, theme, toggleTheme, onLogo
             </div>
           </div>
         </header>
-        <div className="content">{children}</div>
+        <div className="content" key={page}>{children}</div>
       </div>
     </div>
   );

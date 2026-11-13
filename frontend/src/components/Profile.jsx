@@ -58,7 +58,7 @@ export default function Profile({ user, tasks, onUserUpdate }) {
       <div className="grid-2">
         <form className="panel" onSubmit={saveName}>
           <h3>Edit Profile</h3>
-          <label>Full name</label>
+          <label>Full Name</label>
           <input value={name} onChange={(e) => setName(e.target.value)} />
           <label>Email</label>
           <input value={user.email} disabled />

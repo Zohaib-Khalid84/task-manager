@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Plus, Search, Pencil, Trash2, Calendar, X } from 'lucide-react';
 import api from '../api';
-import { formatDate, isOverdue } from '../utils';
+import { formatDate, isOverdue , toast } from '../utils';
 
 const CATEGORIES = ['Work', 'Study', 'Personal', 'Health', 'Other'];
 const EMPTY = { title: '', description: '', category: 'Personal', priority: 'Medium', dueDate: '' };
@@ -45,6 +45,7 @@ export default function Tasks({ tasks, reload }) {
       if (editId) await api.put(`/tasks/${editId}`, payload);
       else await api.post('/tasks', payload);
       setShowModal(false);
+      toast(editId ? 'Task updated' : 'Task created');
       reload();
     } catch (err) {
       setError(err.response?.data?.message || 'Could not save task');
@@ -59,6 +60,7 @@ export default function Tasks({ tasks, reload }) {
   const remove = async (id) => {
     if (!window.confirm('Delete this task?')) return;
     await api.delete(`/tasks/${id}`);
+    toast('Task deleted');
     reload();
   };
 

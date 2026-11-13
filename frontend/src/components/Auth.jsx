@@ -39,7 +39,7 @@ export default function Auth({ onLogin }) {
           <span className="logo">✓</span>
           <span className="brand-text">TaskFlow</span>
         </div>
-        <h1>Organize your work.<br />Achieve more.</h1>
+        <h1>Organize your work.<br /><em>Achieve more.</em></h1>
         <ul>
           <li>✔ Track tasks with priorities and deadlines</li>
           <li>✔ Visual dashboard with progress charts</li>
